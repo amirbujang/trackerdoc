@@ -1,0 +1,9 @@
+.dropdown.bootstrap-select button {
+  color: #495057;
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+
+span.highlight {
+  background-color: yellow;
+}

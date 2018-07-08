@@ -1,0 +1,55 @@
+{% include "header-nav.html" %}
+{% load class_tag %}
+{% load highlight %}
+
+<div class="container-fluid">
+  <table class="table table-bordered table-responsive">
+    <thead>
+      <tr>
+        {% for th in table_headers %}
+        <th>{{ th.header }}</th>
+        {% endfor %}
+        <th>Status</th>
+        <th colspan="2">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for document in documents %}
+      <tr>
+        {% for column in document.columns %}
+          {% with datatype=column|get_class %}
+            {% if datatype == 'datetime' %}
+              <td>{{ column|date:'d/m/Y' }}</td>
+            {% else %}
+              <td>{{ column|highlight:keyword }}</td>
+            {% endif %}
+          {% endwith %}
+        {% endfor %}
+        <td>
+          {% with doc_state=document.last_state %}
+          {{ doc_state.state.name }}
+          {% endwith %}
+        </td>
+        <td>
+          {% for event in document.events %}
+          <button class="btn btn-secondary btn-sm">{{ event.name }}</button>
+          {% endfor %}
+        </td>
+        <td>
+          <a style="padding: 0 5px;" href="{% url 'documents:download_document' document.id %}" data-toggle="tooltip" title="Download as PDF file"><span class="fas fa-file-pdf"></span></a>
+          <a style="padding: 0 5px;" href="{% url 'documents:edit_document' document.id %}" data-toggle="tooltip" title="Edit record"><span class="fas fa-pencil-alt"></span></a>
+          <a style="padding: 0 5px;" href="{% url 'documents:delete_document' document.id %}" data-toggle="tooltip" title="Delete record"><span class="fas fa-trash"></span></a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+
+  </table>
+
+  <a href="{% url 'documents:create_document' %}" class="btn btn-primary">New document</a>
+
+  {% include "documents/_pagination.html" %}
+</div>
+
+{% include "footer.html" %}
