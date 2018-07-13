@@ -62,7 +62,7 @@ class ReportForm(forms.Form):
     type_choice = [
         ('yearly', 'Yearly',),
         ('monthly', 'Monthly'),
-        ('daily', 'Daily'),
+        # ('daily', 'Daily'),
     ]
 
     year_choice = [
