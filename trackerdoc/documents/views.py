@@ -153,6 +153,9 @@ def document_download(request, id):
     dataset = Data.objects.filter(document__id=document.id).all()
     for data in dataset:
         tag = data.template_tag
+        if tag.is_capitalize:
+            data.content = data.content.upper()
+
         html = html.replace(tag.tag, data.content)
 
     pdf_file = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf()
