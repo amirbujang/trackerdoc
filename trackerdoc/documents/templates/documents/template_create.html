@@ -1,0 +1,26 @@
+{% include "header-nav.html" %}
+
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'documents:document_index' %}">Home</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'documents:template_index' %}">Document Templates</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Create Template</li>
+    </ol>
+  </nav>
+
+  <form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {% include "bootstrap4horizontalform.html" %}
+
+    <div class="row">
+      <div class="col-sm-10 offset-sm-2"><button class="btn btn-primary" type="submit">Submit</button></div>
+    </div>
+    <br>
+    <br>
+  </form>
+
+</div>
+
+{% include "footer.html" %}

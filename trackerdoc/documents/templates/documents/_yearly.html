@@ -1,0 +1,36 @@
+{% load count_document %}
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead class="thead-light">
+      <tr>
+        <th rowspan="">Document Type</th>
+        <th colspan="">2018</th>
+        <th rowspan="">Total</th>
+      </tr>
+    </thead>
+    <tfoot>
+      {% for template in templates %}
+      {% if forloop.counter0 == 0 %}
+      <tr>
+        <th>TOTAL</th>
+        {% for arg in args %}
+        <th>{{ template|totaldocument_by_status:arg }}</th>
+        {% endfor %}
+        <th>{{ template|totaldocument_y:"2018" }}</th>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </tfoot>
+    <tbody>
+      {% for template in templates %}
+      <tr>
+        <td>{{ template.name }}</td>
+        {% for arg in args %}
+        <td>{{ template|countdocument_by_status:arg }}</td>
+        {% endfor %}
+        <td>{{ template|countdocument_y:"2018" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

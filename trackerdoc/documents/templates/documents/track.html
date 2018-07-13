@@ -1,0 +1,37 @@
+{% include "header-nav.html" %}
+{% load class_tag %}
+{% load highlight %}
+
+<div class="container">
+
+  <h2>Semakan Status Permohonan</h2>
+
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead class="thead-light">
+        <tr>
+          {% for th in table_headers %}
+          <th>{{ th.header }}</th>
+          {% endfor %}
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>JKPD/13111/GFAWP5433160	</td>
+          <td>96521-M	</td>
+          <td>ANTARATEK SDN BHD	</td>
+          <td>10/07/2018	</td>
+          <td></td>
+          <td></td>
+          <td>Hantar ke HQ</td>
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+
+</div>
+
+{% include "footer.html" %}

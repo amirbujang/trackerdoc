@@ -2,13 +2,136 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>Permohonan Lanjutan Kerja Sementara</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 50mm 25mm 0;
+      }
+      @media only screen {
+        .container {
+          width: 210mm;
+          margin: auto;
+        }
+      }
+      body {
+        font-family: sans-serif;
+        line-height: 1.5em;
+        font-size: 9pt;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      ol {
+        counter-reset: item
+      }
+      li {
+        display: block
+      }
+      li:before {
+        content: counters(item, ".") ". ";
+        counter-increment: item
+      }
+    </style>
+
   </head>
   <body>
-    __REFERENCE_NUMBER__
+    <div class="container">
+      <p style="text-align: right;">
+        <strong>__REFERENCE_NUMBER__</strong>
+      </p>
+      <br>
+      <p style="text-align: right; text-decoration: underline;">
+        <strong>__HIJRI_DATE__</strong>
+      </p>
+      <p style="text-align: right;">
+        <strong>__DATE__</strong>
+      </p>
+      <br>
+      <p>
+        Pengarah Imigresen Negeri Sarawak<br>
+        Jabatan Imigresen Malaysia Negeri Sarawak<br>
+        Kuching<br>
+      </p>
+      <br>
+      <p>
+        Tuan,<br>
+      </p>
+      <br>
 
-    __HIJRI_DATE__<br>
-    __DATE__<br>
+      <p>
+        <strong>
+          PERMOHONAN BARU PAS PENGGAJIAN BAGI : <br>
+          __APPLICANT__
+        </strong>
+      </p>
+      <br>
+      <p>
+        Saya dengan hormatnya, diarah merujuk kepada perkara di atas.
+      </p>
+      <br>
+
+      <p>
+        <span style="display: inline-block; width: 3em;">2.</span>Saya kemukakan permohonan baru Jawatan Pegawai Dagang daripada __COMPANY_NAME__ (__ROC__) untuk mendapatkan Pas Penggajian selama __DURATION__ bulan.
+      </p>
+      <br>
+
+      <p>
+        <span style="display: inline-block; width: 3em;">3.</span>Disertakan dokumen-dokumen berikut untuk rujukan Tuan.
+      </p>
+      <br>
+
+      <p>
+        <span style="display: inline-block; width: 3em; margin-left: 3em;">3.1</span>
+        Surat Akuan Penerimaan
+      </p>
+
+      <p>
+        <span style="display: inline-block; width: 3em; margin-left: 3em;">3.2</span>
+        Surat Iringan daripada majikan
+      </p>
+
+      <p>
+        <span style="display: inline-block; width: 3em; margin-left: 3em;">3.3</span>
+        Salinan Pasport, Salinan Pas Terkini Penyandang
+      </p>
+
+      <p>
+        <span style="display: inline-block; width: 3em; margin-left: 3em;">3.4</span>
+        Borang Imm.12
+      </p>
+
+      <p>
+        <span style="display: inline-block; width: 3em; margin-left: 3em;">3.5</span>
+        Borang ringkasan
+      </p>
+      <br>
+
+      <p>Sekian, terima kasih.</p>
+      <br>
+      <p><strong>&ldquo;BERKHIDMAT UNTUK NEGARA&rdquo;</strong></p>
+      <p><strong>&ldquo;INTEGRITI, PROFESIONAL DAN MESRA&rdquo;</strong></p>
+      <br>
+      <p>Saya yang menurut perintah,</p>
+      <br>
+      <br>
+      <br>
+      <br>
+      <p>
+        <strong>
+        (__OFFICER__) __RANK__
+        </strong>
+      </p>
+      <p>
+        Ketua Imigresen Bahagian Sibu
+        <br>
+        SIBU
+      </p>
+    </div>
+
+
 
   </body>
 </html>

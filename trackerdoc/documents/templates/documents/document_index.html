@@ -3,53 +3,210 @@
 {% load highlight %}
 
 <div class="container-fluid">
-  <table class="table table-bordered table-responsive">
-    <thead>
-      <tr>
-        {% for th in table_headers %}
-        <th>{{ th.header }}</th>
-        {% endfor %}
-        <th>Status</th>
-        <th colspan="2">Actions</th>
-      </tr>
-    </thead>
 
-    <tbody>
-      {% for document in documents %}
-      <tr>
-        {% for column in document.columns %}
-          {% with datatype=column|get_class %}
-            {% if datatype == 'datetime' %}
-              <td>{{ column|date:'d/m/Y' }}</td>
+  <div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+    </div>
+  </div>
+
+  <div class="row" style="margin-bottom: 10px;">
+    <div class="col-lg">
+      <form action="{% url 'documents:document_index' %}" method="GET" class="form-inline" style="margin-bottom: 10px;">
+        <input name="keyword" type="text" class="form-control mb-2 mr-sm-2" placeholder="Search documents" value="{{ keyword }}">
+        <select name="status_code" class="form-control mb-2 mr-sm-2">
+          <option value="">Any status</option>
+          {% for state in states %}
+            {% if state.code == status_code %}
+              <option selected="selected" value="{{ state.code }}">{{ state.name }}</option>
             {% else %}
-              <td>{{ column|highlight:keyword }}</td>
+              <option value="{{ state.code }}">{{ state.name }}</option>
             {% endif %}
-          {% endwith %}
-        {% endfor %}
-        <td>
-          {% with doc_state=document.last_state %}
-          {{ doc_state.state.name }}
-          {% endwith %}
-        </td>
-        <td>
-          {% for event in document.events %}
-          <button class="btn btn-secondary btn-sm">{{ event.name }}</button>
           {% endfor %}
-        </td>
-        <td>
-          <a style="padding: 0 5px;" href="{% url 'documents:download_document' document.id %}" data-toggle="tooltip" title="Download as PDF file"><span class="fas fa-file-pdf"></span></a>
-          <a style="padding: 0 5px;" href="{% url 'documents:edit_document' document.id %}" data-toggle="tooltip" title="Edit record"><span class="fas fa-pencil-alt"></span></a>
-          <a style="padding: 0 5px;" href="{% url 'documents:delete_document' document.id %}" data-toggle="tooltip" title="Delete record"><span class="fas fa-trash"></span></a>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
+        </select>
+        <button class="btn btn-primary mb-2" type="submit">Search</button>
+      </form>
+    </div>
 
-  </table>
+    <div class="col-lg">
+      <form action="{% url 'documents:create_document' %}" class="form-inline float-md-right" method="GET" style="margin-bottom: 10px;">
+        <select class="form-control mb-2 mr-sm-2" name="template_id">
+          {% for template in templates %}
+          <option value="{{ template.id }}">{{ template.name }}</option>
+          {% endfor %}
+        </select>
+        <button class="btn btn-primary mb-2" type="submit">Create New Document</button>
+      </form>
+    </div>
+  </div>
 
-  <a href="{% url 'documents:create_document' %}" class="btn btn-primary">New document</a>
+  {% if keyword or status_code %}
+  <div class="alert alert-primary" role="alert">
+    {% if keyword and status_code %}
+    Search results for <strong><em>{{ keyword }}</em></strong> and status <strong><em>{{ status_code }}</em></strong>.
+    {% elif keyword %}
+    Search results for <strong><em>{{ keyword }}</em></strong>.
+    {% elif status_code %}
+    Search results for status <strong><em>{{ status_code }}</em></strong>.
+    {% endif %}
+    <a href="{% url 'documents:document_index' %}">Clear search</a>
+  </div>
+  {% endif %}
+
+
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead class="thead-light">
+        <tr>
+          {% for th in table_headers %}
+          <th>{{ th.header }}</th>
+          {% endfor %}
+          <th>Status</th>
+          <th colspan="2">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for document in documents %}
+        <tr>
+          {% for column in document.columns %}
+            {% with datatype=column|get_class %}
+              {% if datatype == 'datetime' %}
+                <td style="width: 1%; white-space:nowrap;">{{ column|date:'d/m/Y' }}</td>
+              {% else %}
+                <td>{{ column|highlight:keyword }}</td>
+              {% endif %}
+            {% endwith %}
+          {% endfor %}
+          <td style="width: 1%; white-space:nowrap;" class="current-state">
+            <del></del> <span style="display: none;" class="fas fa-arrow-right state-arrow"></span> <span class="state-name">{{ document.current_state.name }}</span>
+          </td>
+          <td style="width: 1%; white-space:nowrap;" class="action-event">
+            {% for event in document.events %}
+            <button class="btn btn-secondary btn-sm btn-event btn-block"
+              data-document-id="{{ document.id }}"
+              data-next-state-id="{{ event.destination.id }}"
+              data-next-state="{{ event.destination.name }}"
+              data-current-state="{{ event.source.name }}"
+              data-event-name="{{ event.name }}">
+              {{ event.name }}
+            </button>
+            {% endfor %}
+          </td>
+          <td style="width: 1%; white-space:nowrap;">
+            <a style="padding: 0 5px;" href="{% url 'documents:download_document' document.id %}" data-toggle="tooltip" title="Download as PDF file"><span class="fas fa-file-pdf"></span></a>
+            <a style="padding: 0 5px;" href="{% url 'documents:edit_document' document.id %}" data-toggle="tooltip" title="Edit record"><span class="fas fa-pencil-alt"></span></a>
+            <a onclick="return confirm('Delete document?');" style="padding: 0 5px;" href="{% url 'documents:delete_document' document.id %}" data-toggle="tooltip" title="Delete record"><span class="fas fa-trash"></span></a>
+          </td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <td colspan="{{ table_headers|length }}"></td>
+          <td>
+            <button id="update-button" class="btn btn-success btn-block btn-sm" type="button" disabled>Update Status</button>
+          </td>
+          <td colspan="2"></td>
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
 
   {% include "documents/_pagination.html" %}
 </div>
+
+<script type="text/javascript">
+  var onState = 'btn-warning';
+  var offState = 'btn-secondary';
+
+  function updateButton() {
+    var items = $('.action-event .btn-warning').length
+
+    if(items > 0) {
+      $('#update-button').prop('disabled', false);
+    } else {
+      $('#update-button').prop('disabled', true);
+    }
+  }
+
+  function isStaged($btn) {
+    return $btn.hasClass('btn-warning');
+  }
+
+  function stageDocument($btn) {
+    $btn.addClass(onState);
+    $btn.removeClass(offState);
+    $btn.text('Cancel');
+
+    var $stateTd = $btn.parent().parent().find('.current-state .state-name');
+    var $delTd = $btn.parent().parent().find('.current-state del');
+    var curState = $btn.attr('data-current-state')
+    var nextState = $btn.attr('data-next-state')
+    $stateTd.text(nextState);
+    $delTd.text(curState)
+    $stateTd.addClass('staged');
+    $btn.parent().parent().find('.current-state .state-arrow').show();
+
+    updateButton();
+  }
+
+  function unstageDocument($btn) {
+    $btn.addClass(offState);
+    $btn.removeClass(onState);
+    $btn.text($btn.attr('data-event-name'));
+
+    var $stateTd = $btn.parent().parent().find('.current-state .state-name');
+    var $delTd = $btn.parent().parent().find('.current-state del');
+    var currentState = $btn.attr('data-current-state')
+    $delTd.text('');
+    $stateTd.text(currentState);
+    $stateTd.removeClass('staged');
+    $btn.parent().parent().find('.current-state .state-arrow').hide();
+
+
+    updateButton();
+  }
+
+  $('.btn-event').click(function(e) {
+    var $btn = $(e.target);
+    var docId = $btn.attr('data-document-id');
+    var nextState = $btn.attr('data-next-state');
+
+    if(isStaged($btn)) {
+      unstageDocument($btn);
+    } else {
+      stageDocument($btn);
+    }
+  });
+
+  function modal() {
+     $('.modal').modal('show');
+  }
+
+  function confirmDelete() {
+    var result = confirm("Delete document?");
+    modal();
+    return result;
+  }
+
+  $('#update-button').click(function(e) {
+    var items = []
+    $('.action-event .'+onState).each(function(i, el) {
+      var $btn = $(el);
+      items[i] = {
+        document_id: $btn.attr('data-document-id'),
+        destination_id: $btn.attr('data-next-state-id')
+      };
+    });
+
+    $.post('{% url "documents:update_state" %}', {
+      documents: JSON.stringify(items),
+      csrfmiddlewaretoken: '{{ csrf_token }}'
+    }, function() {
+      modal();
+      location.reload();
+    });
+  });
+
+</script>
 
 {% include "footer.html" %}

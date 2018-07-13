@@ -17,8 +17,10 @@ from django.contrib import admin
 from django.urls import path, include
 
 import debug_toolbar
+from documents import views as doc_views
 
 urlpatterns = [
+    path('', doc_views.document_index, name='home'),
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
     path('documents/', include('documents.urls')),

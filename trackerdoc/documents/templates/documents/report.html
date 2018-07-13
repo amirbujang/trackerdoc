@@ -1,0 +1,55 @@
+{% include "header-nav.html" %}
+{% load widget_tweaks %}
+<div class="container-fluid">
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'documents:document_index' %}">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Document Report - 2018</li>
+    </ol>
+  </nav>
+
+  <form method="get">
+    {% include "bootstrap4horizontalform.html" %}
+
+    <div class="form-group row">
+      <label for="report-month" class="col-sm-2 col-form-label"></label>
+      <div class="col-sm-10 offset-sm-2">
+        <button type="submit" class="btn btn-primary">Generate</button>
+      </div>
+    </div>
+  </form>
+
+  {% if report_type %}
+    {% if report_type == 'yearly' %}
+      {% include "documents/_yearly.html" %}
+    {% elif report_type == 'monthly' %}
+      {% include "documents/_monthly.html" %}
+    {% elif report_type == 'daily' %}
+      {% include "documents/_daily.html" %}
+    {% endif %}
+  {% endif %}
+
+  <script type="text/javascript">
+    function hide_fields() {
+      $('#id_year').closest('.row').hide()
+      $('#id_month').closest('.row').hide()
+
+      var rtype = $('#id_report_type').val();
+      if(rtype == 'monthly') {
+        $('#id_year').closest('.row').show()
+      } else if (rtype == 'daily') {
+        $('#id_year').closest('.row').show()
+        $('#id_month').closest('.row').show()
+      }
+    }
+
+    hide_fields();
+
+    $('#id_report_type').change(function() {
+        hide_fields();
+    });
+  </script>
+
+</div>
+{% include "footer.html" %}

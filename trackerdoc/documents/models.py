@@ -47,6 +47,12 @@ class Template(models.Model):
     def __str__(self):
         return self.name
 
+    def count_document_ym(self, year, month):
+        return Document.objects.filter(documentstate__created_at__month=month, documentstate__created_at__year=year, template__id=self.id, documentstate__state__code="serah").count()
+
+    def count_document_y(self, year):
+        return Document.objects.filter(documentstate__created_at__year=year, template__id=self.id, documentstate__state__code="serah").count()
+
 class TemplateTag(models.Model):
     template = models.ForeignKey(Template, on_delete=models.CASCADE)
     tag = models.CharField(max_length=50)
@@ -62,7 +68,7 @@ class TemplateTag(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.label
+        return "%s.%s [%d]" % (self.template.name, self.tag, self.sorting_order,)
 
 class Document(models.Model):
     name = models.CharField(max_length=100)
@@ -92,9 +98,9 @@ class Document(models.Model):
         return self.documentstate_set.order_by("created_at").last()
 
     def events(self):
-        state = self.last_state()
-        if state:
-            return Event.objects.filter(source__id=state.id).order_by('sorting_order').all()
+        if self.current_state:
+            events = Event.objects.filter(source__id=self.current_state.id).order_by('sorting_order').all()
+            return events
 
         return []
 
@@ -105,6 +111,9 @@ class Data(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ['template_tag__sorting_order']
+
     def __str__(self):
         return "%s.%s : %s" % (self.document.name, self.template_tag.tag, self.content,)
 
@@ -112,8 +121,9 @@ class DocumentState(models.Model):
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
     state = models.ForeignKey(State, on_delete=models.CASCADE)
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, editable=True)
     updated_at = models.DateTimeField(auto_now=True)
+    created_at.editable=True
 
     def __str__(self):
         return "%s.%s" % (self.document.name, self.state.name, )

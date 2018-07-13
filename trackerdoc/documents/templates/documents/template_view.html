@@ -1,0 +1,14 @@
+{% include "header-nav.html" %}
+
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'documents:document_index' %}">Home</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'documents:template_index' %}">Document Templates</a></li>
+      <li class="breadcrumb-item active" aria-current="page">View Template</li>
+    </ol>
+  </nav>
+
+</div>
+
+{% include "footer.html" %}

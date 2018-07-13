@@ -1,10 +1,13 @@
 {% include "header.html" %}
+{% load i18n %}
 
 <div class="container" style="height: 100vh;">
   <div class="row align-items-center h-100">
     <div class="col-md-4 mx-auto my-auto">
       <h1 style="text-align: center; margin-bottom: 0;">TRACKERDOC</h1>
-      <h3 style="text-align: center; margin: 0 0 30px 0;">Please login</h3>
+      <h3 style="text-align: center; margin: 0 0 30px 0;">
+        {% trans "Please login" %}
+      </h3>
 
       <div style="padding: 30px 20px; background-color: #e5e5e5; margin-bottom: 80px;">
         <form action="{% url 'users:login' %}" method="post">
@@ -12,7 +15,7 @@
 
           {% include "bootstrap4form.html" %}
 
-          <button class="btn btn-primary btn-block" type="submit">Login</button>
+          <button class="btn btn-primary btn-block" type="submit">{% trans "Login" %}</button>
         </form>
       </div>
     </div>

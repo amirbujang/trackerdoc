@@ -1,0 +1,104 @@
+{% include "header-nav.html" %}
+
+<div class="container-fluid">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'documents:document_index' %}">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Document Templates</li>
+    </ol>
+  </nav>
+
+
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead class="thead-light">
+        <tr>
+          <th>Name/Description</th>
+          <th>Field</th>
+          <th>Label</th>
+          <th>Type</th>
+          <th>Default Value</th>
+          <th class="template-icons"><span class="fas fa-font" title="Capitalize"></span></th>
+          <th class="template-icons"><span class="fas fa-magic" title="Autocomplete"></span></th>
+          <th class="template-icons"><span class="fas fa-search" title="Searchable"></span></th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      {% for template in templates %}
+        <tbody>
+          {% with tags=template.templatetag_set.all %}
+            {% with rowspan=tags|length %}
+              <tr>
+                <td rowspan="{{ rowspan }}">
+                  <strong>{{ template.name }}</strong><br>
+                  {{ template.description }}
+                </td>
+                <td class="fit-cell">
+                  <!-- tag -->
+                  {{ tags.0.tag }}
+                </td>
+                <td class="fit-cell">
+                  <!-- label -->
+                  {{ tags.0.label }}
+                </td>
+                <td class="fit-cell">
+                  <!-- type -->
+                  {{ tags.0.type }}
+                </td>
+                <td>
+                  {{ tags.0.default_content }}
+                </td>
+
+                <td class="template-icons">
+                  {% if tags.0.is_capitalize %} <span class="fas fa-check" title="Capitalized"></span> {% endif %}
+                </td>
+                <td class="template-icons">
+                  {% if tags.0.is_autocomplete %} <span class="fas fa-check" title="Autocomplete"></span> {% endif %}
+                </td>
+                <td class="template-icons">
+                  {% if tags.0.is_searchable %} <span class="fas fa-check" title="Searchable"></span> {% endif %}
+                </td>
+
+                <td rowspan="{{ rowspan }}" class="fit-cell">Active</td>
+                <td rowspan="{{ rowspan }}" class="template-index-actions">
+                  <a href="{% url 'documents:view_template' template.id %}"><span class="fas fa-eye" title="Preview template"></span></a>
+                  <a href="{% url 'documents:edit_template' template.id %}"><span class="fas fa-pencil-alt" title="Edit template"></span></a>
+                  <a onclick="return confirm('Delete?');" href="{% url 'documents:delete_template' template.id %}"><span class="fas fa-trash" title="Delete template"></span></a>
+                </td>
+              </tr>
+              {% for tag in tags %}
+                {% if forloop.counter0 > 0 %}
+                  <tr>
+                    <td class="fit-cell">{{ tag.tag }}</td>
+                    <td class="fit-cell">{{ tag.label }}</td>
+                    <td class="fit-cell">{{ tag.type }}</td>
+                    <td>{{ tag.default_content }}</td>
+
+                    <td class="template-icons">
+                      {% if tag.is_capitalize %} <span class="fas fa-check" title="Capitalized"></span> {% endif %}
+                    </td>
+                    <td class="template-icons">
+                      {% if tag.is_autocomplete %} <span class="fas fa-check" title="Autocomplete"></span> {% endif %}
+                    </td>
+                    <td class="template-icons">
+                      {% if tag.is_searchable %} <span class="fas fa-check" title="Searchable"></span> {% endif %}
+                    </td>
+
+                  </tr>
+                {% endif %}
+              {% endfor %}
+            {% endwith %}
+          {% endwith %}
+        </tbody>
+      {% endfor %}
+    </table>
+  </div>
+
+  <a href="{% url 'documents:create_template' %}" class="btn btn-primary">Create new template</a>
+  <br>
+  <br>
+</div>
+
+{% include "footer.html" %}

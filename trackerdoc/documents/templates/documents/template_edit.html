@@ -1,0 +1,76 @@
+{% include "header-nav.html" %}
+{% load widget_tweaks %}
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'documents:document_index' %}">Home</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'documents:template_index' %}">Document Templates</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Edit Template</li>
+    </ol>
+  </nav>
+
+
+  <form action="" method="post">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    {% include "bootstrap4horizontalform.html" %}
+
+    <br>
+    <br>
+
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Label</th>
+            <th>Type</th>
+            <th>Default Value</th>
+            <th class="template-icons"><span class="fas fa-font" title="Capitalize"></span></th>
+            <th class="template-icons"><span class="fas fa-magic" title="Autocomplete"></span></th>
+            <th class="template-icons"><span class="fas fa-search" title="Searchable"></span></th>
+            <th class="template-icons"><span class="fas fa-trash" title="Delete"></span></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for tagform in formset %}
+            {% for hidden_field in tagform.hidden_fields %}
+              {{ hidden_field }}
+            {% endfor %}
+
+            <tr>
+              {% for field in tagform.visible_fields %}
+                <td>
+                  {% if tagform.is_bound %}
+                    {% if field.errors %}
+                      {% render_field field class="form-control is-invalid" %}
+                      {% for error in field.errors %}
+                        <div class="invalid-feedback">
+                          {{ error }}
+                        </div>
+                      {% endfor %}
+                    {% else %}
+                      {% render_field field class="form-control is-valid" placeholder= %}
+                    {% endif %}
+                  {% else %}
+                    {% render_field field class="form-control" %}
+                  {% endif %}
+                </td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+
+    <div class="row">
+      <div class="col-sm-10 offset-sm-2"><button class="btn btn-primary" type="submit">Submit</button></div>
+    </div>
+    <br>
+    <br>
+  </form>
+
+</div>
+
+{% include "footer.html" %}
