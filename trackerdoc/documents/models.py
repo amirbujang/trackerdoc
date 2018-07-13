@@ -122,7 +122,7 @@ class DocumentState(models.Model):
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
     state = models.ForeignKey(State, on_delete=models.CASCADE)
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
-    created_at = models.DateTimeField(auto_now_add=True, editable=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_at.editable=True
 
