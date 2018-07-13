@@ -38,7 +38,7 @@ class TemplateUploadForm(forms.ModelForm):
 class TemplateForm(forms.ModelForm):
     class Meta:
         model = Template
-        fields = ['name', 'description', 'template_single_page', 'is_active',]
+        fields = ['name', 'description', 'template_single_page', 'filename_tag', 'is_active']
         label = {
             'template_single_page': 'Html Template',
         }

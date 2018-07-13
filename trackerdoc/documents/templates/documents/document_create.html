@@ -15,11 +15,6 @@
     {% csrf_token %}
     {{ formset.management_form }}
 
-    {% include "bootstrap4horizontalform.html" %}
-
-    <br>
-    <br>
-
     {% for dataform in formset %}
       {% for hidden_field in dataform.hidden_fields %}
         {{ hidden_field }}

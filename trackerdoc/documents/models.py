@@ -40,6 +40,7 @@ class Template(models.Model):
     description = models.TextField(blank=True)
     template_single_page = models.TextField(blank=True)
     template_with_attachment = models.TextField(blank=True)
+    filename_tag = models.CharField(max_length=50, blank=True)
     is_active = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

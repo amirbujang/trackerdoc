@@ -15,6 +15,10 @@ from .models import DocumentTableColumn, Document, Data, DocumentState, Template
 from .forms import DataForm, DocumentForm, TemplateForm, TemplateUploadForm, TemplateTagForm, StatusUpdateForm, ReportForm
 from .date import get_today_date, get_today_local_date, get_today_hijri_date
 
+def make_filename_safe(name):
+    regex = re.compile('[^a-zA-Z0-9 ]')
+    return regex.sub('', name)
+
 @login_required
 def document_index(request):
     keyword = request.GET.get("keyword")
@@ -59,25 +63,28 @@ def document_create(request):
     DataFormSet = inlineformset_factory(Document, Data, form=DataForm, extra=len(tags), can_delete=False)
 
     if request.method == "POST":
-        form = DocumentForm(request.POST)
-        document = form.save(commit=False)
-        state = State.objects.filter(code="baru").first()
-
+        baru = State.objects.filter(type="start").first()
+        document = Document()
         document.template = Template.objects.filter(id=template_id).first()
-        document.current_state = state
+        document.current_state = baru
         document.save()
         document.documentstate_set.create(
-            state=state,
+            state=document.current_state,
             user=request.user
         )
 
         formset = DataFormSet(request.POST, instance=document)
         if formset.is_valid():
             formset.save()
+
+            data = Data.objects.filter(document__id=document.id, template_tag__tag=document.template.filename_tag).first()
+            doc = Document.objects.filter(id=document.id).first()
+            doc.name = make_filename_safe(data.content)
+            doc.save()
+
             return HttpResponseRedirect(reverse('documents:document_index'))
 
     else:
-        form = DocumentForm(initial={'current_state': State.objects.filter(type="start").first()})
         initials = []
         for tag in tags:
             data = {'template_tag': tag.id, 'content': ''}
@@ -98,7 +105,7 @@ def document_create(request):
 
         formset = DataFormSet(initial=initials)
 
-    return render(request, "documents/document_create.html", {"form": form, "formset": formset, 'template_tags': tags, "template_id": template_id})
+    return render(request, "documents/document_create.html", {"formset": formset, 'template_tags': tags, "template_id": template_id})
 
 
 @login_required
@@ -108,19 +115,15 @@ def document_edit(request, id):
     document = Document.objects.filter(id=id).first()
 
     if request.method == "POST":
-        form = DocumentForm(request.POST, instance=document)
-        document.save()
-
         formset = DataFormSet(request.POST, instance=document)
         if formset.is_valid():
             formset.save()
             return HttpResponseRedirect(reverse('documents:document_index'))
 
     else:
-        form = DocumentForm(instance=document)
         formset = DataFormSet(instance=document)
 
-    return render(request, "documents/document_edit.html", {"form": form, "formset": formset, 'template_tags': tags})
+    return render(request, "documents/document_edit.html", {"formset": formset, 'template_tags': tags})
 
 @login_required
 def document_view(request, id):
