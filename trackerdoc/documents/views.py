@@ -31,7 +31,7 @@ def document_index(request):
     keyword = keyword.strip()
     records = Document.search(keyword, status_code).order_by("-created_at").distinct()
 
-    paginator = Paginator(records, 10)
+    paginator = Paginator(records, 5)
     documents = paginator.get_page(page)
 
     table_headers = DocumentTableColumn.objects.all().order_by("sorting_order")
