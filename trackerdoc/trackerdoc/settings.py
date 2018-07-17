@@ -43,7 +43,7 @@ INSTALLED_APPS = [
 
     'django.contrib.humanize',
     'widget_tweaks',
-    'debug_toolbar',
+    # 'debug_toolbar',
 
     'users.apps.UsersConfig',
     'documents.apps.DocumentsConfig',
@@ -57,7 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'trackerdoc.urls'
@@ -137,4 +137,3 @@ LOGOUT_REDIRECT_URL = "/users/login"
 STATIC_URL = '/static/'
 
 INTERNAL_IPS = ('127.0.0.1')
-DEBUG = True
