@@ -4,7 +4,7 @@
 
 <div class="container-fluid">
 
-  <div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
+  <div id="blank-modal" class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
     <div class="modal-dialog modal-sm">
     </div>
   </div>
@@ -77,13 +77,18 @@
               {% endif %}
             {% endwith %}
           {% endfor %}
+
           <td style="width: 1%; white-space:nowrap;" class="current-state">
             <del></del> <span style="display: none;" class="fas fa-arrow-right state-arrow"></span> <span class="state-name">{{ document.current_state.name }}</span>
           </td>
+
           <td style="width: 1%; white-space:nowrap;" class="action-event">
             {% for event in document.events %}
             <button class="btn btn-secondary btn-sm btn-event btn-block"
               data-document-id="{{ document.id }}"
+              data-state-data=""
+              data-state-data-label="{{ event.destination.extra_data_label }}"
+
               data-next-state-id="{{ event.destination.id }}"
               data-next-state="{{ event.destination.name }}"
               data-current-state="{{ event.source.name }}"
@@ -111,6 +116,7 @@
     </table>
   </div>
 
+  {% include "documents/_modal.html" %}
   {% include "documents/_pagination.html" %}
 </div>
 
@@ -162,14 +168,29 @@
     $stateTd.removeClass('staged');
     $btn.parent().parent().find('.current-state .state-arrow').hide();
 
-
     updateButton();
   }
 
+  btn = {};
   $('.btn-event').click(function(e) {
     var $btn = $(e.target);
+    btn = $btn;
     var docId = $btn.attr('data-document-id');
     var nextState = $btn.attr('data-next-state');
+    var dataLabel = $btn.attr('data-state-data-label');
+    var extraData = $btn.attr('data-state-data');
+
+    if(dataLabel && !isStaged($btn)) {
+      $('#modal-text').text(dataLabel);
+      $('#extra-data-input').val(extraData);
+
+      setTimeout(function() {
+        $('#extra-data-input').focus();
+      }, 10);
+
+      $('#input-modal').modal();
+
+    }
 
     if(isStaged($btn)) {
       unstageDocument($btn);
@@ -178,8 +199,19 @@
     }
   });
 
+  function cancelInputModal() {
+    unstageDocument(btn)
+    $('#input-modal').modal('hide');
+  }
+
+  function doneInputModal() {
+    extraData = $('#extra-data-input').val();
+    btn.attr('data-state-data', extraData);
+    $('#input-modal').modal('hide');
+  }
+
   function modal() {
-     $('.modal').modal('show');
+     $('#blank-modal').modal('show');
   }
 
   function confirmDelete() {
@@ -194,7 +226,8 @@
       var $btn = $(el);
       items[i] = {
         document_id: $btn.attr('data-document-id'),
-        destination_id: $btn.attr('data-next-state-id')
+        destination_id: $btn.attr('data-next-state-id'),
+        data: $btn.attr('data-state-data'),
       };
     });
 

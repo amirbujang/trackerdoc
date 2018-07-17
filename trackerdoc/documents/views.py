@@ -52,6 +52,11 @@ def document_index(request):
                 else:
                     documents[i].columns.append('')
 
+            elif header.table == "state_data":
+                cell = DocumentState.objects.filter(document__id=document.id).last()
+                if cell:
+                    documents[i].columns.append(cell.extra_data)
+
     states = State.objects.all()
     templates = Template.objects.all()
     return render(request, "documents/document_index.html", {"documents": documents, "table_headers": table_headers, "keyword": keyword, "templates": templates, "states": states, "status_code": status_code})
@@ -173,7 +178,8 @@ def document_update_state(request):
     for form in forms:
         document = Document.objects.filter(id=form["document_id"]).first()
         state = State.objects.filter(id=form["destination_id"]).first()
-        docstate = DocumentState(document=document, state=state, user=request.user)
+        data = form["data"]
+        docstate = DocumentState(document=document, state=state, extra_data=data, user=request.user)
         docstate.save()
         document.current_state = state
         document.save()

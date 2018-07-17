@@ -17,6 +17,7 @@ class State(models.Model):
     name = models.CharField(max_length=50)
     code = models.CharField(max_length=50)
     type = models.CharField(max_length=50)
+    extra_data_label = models.CharField(max_length=200, blank=True)
     narration = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -122,6 +123,7 @@ class DocumentState(models.Model):
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
     state = models.ForeignKey(State, on_delete=models.CASCADE)
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    extra_data = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_at.editable=True
