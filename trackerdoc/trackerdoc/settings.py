@@ -25,7 +25,10 @@ SECRET_KEY = 'plltn20)b1+*yw2dy+oo+p!l8@_aoh&izw*0tr&ry#u4m_(+ow'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'trackerdoc.ddns.net',
+    'localhost',
+]
 
 
 # Application definition
