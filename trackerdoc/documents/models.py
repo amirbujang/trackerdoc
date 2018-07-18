@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import Q
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 class DocumentTableColumn(models.Model):
     header = models.CharField(max_length=50)
@@ -36,6 +36,13 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
+
+class EventPermission(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "%s - %s" % (self.event.name, self.group.name,)
 
 class Template(models.Model):
     name = models.CharField(max_length=50)
