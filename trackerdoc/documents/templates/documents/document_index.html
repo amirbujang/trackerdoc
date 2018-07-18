@@ -113,8 +113,19 @@
           </td>
           <td style="width: 1%; white-space:nowrap;">
             <a style="padding: 0 5px;" href="{% url 'documents:download_document' document.id %}" data-toggle="tooltip" title="Download as PDF file"><span class="fas fa-file-pdf"></span></a>
-            <a style="padding: 0 5px;" href="{% url 'documents:edit_document' document.id %}" data-toggle="tooltip" title="Edit record"><span class="fas fa-pencil-alt"></span></a>
-            <a onclick="return confirm('Delete document?');" style="padding: 0 5px;" href="{% url 'documents:delete_document' document.id %}" data-toggle="tooltip" title="Delete record"><span class="fas fa-trash"></span></a>
+            {% if request.user|edit_permission %}
+              <a style="padding: 0 5px;" href="{% url 'documents:edit_document' document.id %}" data-toggle="tooltip" title="Edit record"><span class="fas fa-pencil-alt"></span></a>
+            {% else %}
+              <span style="padding: 0 5px;" class="fas fa-pencil-alt"></span>
+            {% endif %}
+
+            {% if request.user|delete_permission %}
+              <a onclick="return confirm('Delete document?');" style="padding: 0 5px;" href="{% url 'documents:delete_document' document.id %}" data-toggle="tooltip" title="Delete record"><span class="fas fa-trash"></span></a>
+            {% else %}
+              <span style="padding: 0 5px;" class="fas fa-trash-alt"></span>
+            {% endif %}
+
+
           </td>
         </tr>
         {% endfor %}
