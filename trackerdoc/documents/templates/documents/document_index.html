@@ -2,6 +2,7 @@
 {% load class_tag %}
 {% load highlight %}
 {% load arr_index %}
+{% load permission %}
 
 <div class="container-fluid">
 
@@ -35,7 +36,11 @@
           <option value="{{ template.id }}">{{ template.name }}</option>
           {% endfor %}
         </select>
-        <button class="btn btn-primary mb-2" type="submit">Create New Document</button>
+        <button
+          {% if not request.user|create_permission %}
+          disabled="disabled"
+          {% endif %}
+          class="btn btn-primary mb-2" type="submit">Create New Document</button>
       </form>
     </div>
   </div>
@@ -95,7 +100,13 @@
               data-next-state-id="{{ event.destination.id }}"
               data-next-state="{{ event.destination.name }}"
               data-current-state="{{ event.source.name }}"
-              data-event-name="{{ event.name }}">
+              data-event-name="{{ event.name }}"
+              {% if not event|action_permission:request.user %}
+                disabled="disabled"
+                title="No permission to perform action"
+              {% endif %}
+              >
+
               {{ event.name }}
             </button>
             {% endfor %}

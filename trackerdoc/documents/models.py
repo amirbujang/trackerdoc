@@ -28,7 +28,7 @@ class State(models.Model):
 
 class Event(models.Model):
     name = models.CharField(max_length=20)
-    source = models.ForeignKey(State, on_delete=models.CASCADE, related_name="source")
+    source = models.ForeignKey(State, on_delete=models.CASCADE, related_name="source", null=True, blank=True)
     destination = models.ForeignKey(State, on_delete=models.CASCADE, related_name="destination")
     sorting_order = models.IntegerField(default=99)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -40,6 +40,7 @@ class Event(models.Model):
 class EventPermission(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    allow = models.BooleanField(default=True)
 
     def __str__(self):
         return "%s - %s" % (self.event.name, self.group.name,)
