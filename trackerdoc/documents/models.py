@@ -6,6 +6,7 @@ class DocumentTableColumn(models.Model):
     header = models.CharField(max_length=50)
     table = models.CharField(max_length=50)
     values = models.TextField()
+    css_class = models.CharField(max_length=50, blank=True, default="")
     sorting_order = models.IntegerField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -126,7 +127,7 @@ class DocumentState(models.Model):
     extra_data = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_at.editable=True
+    #created_at.editable=True
 
     def __str__(self):
         return "%s.%s" % (self.document.name, self.state.name, )

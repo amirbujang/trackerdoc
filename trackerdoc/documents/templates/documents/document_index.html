@@ -1,6 +1,7 @@
 {% include "header-nav.html" %}
 {% load class_tag %}
 {% load highlight %}
+{% load arr_index %}
 
 <div class="container-fluid">
 
@@ -70,11 +71,13 @@
         <tr>
           {% for column in document.columns %}
             {% with datatype=column|get_class %}
-              {% if datatype == 'datetime' %}
-                <td style="width: 1%; white-space:nowrap;">{{ column|date:'d/m/Y' }}</td>
-              {% else %}
-                <td>{{ column|highlight:keyword }}</td>
-              {% endif %}
+              {% with header=table_headers|get_value:forloop.counter0 %}
+                {% if datatype == 'datetime' %}
+                  <td style="width: 1%; white-space:nowrap;" class="{{ header.css_class }}">{{ column|date:'d/m/Y' }}</td>
+                {% else %}
+                  <td class="{{ header.css_class }}">{{ column|highlight:keyword }}</td>
+                {% endif %}
+              {% endwith %}
             {% endwith %}
           {% endfor %}
 
@@ -168,6 +171,12 @@
     $stateTd.removeClass('staged');
     $btn.parent().parent().find('.current-state .state-arrow').hide();
 
+    var $extraDataTd = $btn.closest('tr').find('.td-extra-data');
+    if($extraDataTd) {
+      $extraDataTd.text('');
+      $extraDataTd.removeClass('staged');
+    }
+
     updateButton();
   }
 
@@ -208,6 +217,12 @@
     extraData = $('#extra-data-input').val();
     btn.attr('data-state-data', extraData);
     $('#input-modal').modal('hide');
+
+    var $extraDataTd = btn.closest('tr').find('.td-extra-data');
+    if($extraDataTd) {
+      $extraDataTd.text(extraData);
+      $extraDataTd.addClass('staged');
+    }
   }
 
   function modal() {
