@@ -16,7 +16,7 @@
         {% for arg in args %}
         <th>{{ template|totaldocument_by_status:arg }}</th>
         {% endfor %}
-        <th>{{ template|totaldocument_y:"2018" }}</th>
+        <th>{{ total }}</th>
       </tr>
       {% endif %}
       {% endfor %}
@@ -28,7 +28,7 @@
         {% for arg in args %}
         <td>{{ template|countdocument_by_status:arg }}</td>
         {% endfor %}
-        <td>{{ template|countdocument_y:"2018" }}</td>
+        <td>{{ template|countdocument_by_status:subtotal_arg }}</td>
       </tr>
       {% endfor %}
     </tbody>

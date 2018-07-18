@@ -267,8 +267,10 @@ def report(request):
     else:
         form = ReportForm()
 
+    subtotal_arg = ''
     args = []
     subtotal_args = ''
+    total = 0
     if form.is_valid():
         data = form.cleaned_data
         report_type = data['report_type']
@@ -278,10 +280,13 @@ def report(request):
 
         if report_type == "yearly":
             args.append("%s,2018" % (status,))
+            total = Document.objects.filter(documentstate__state__id=status).distinct().count()
+            subtotal_arg = "%s, 2018" % (status, )
 
         elif report_type == "monthly":
             for m in range(1,13):
                 args.append("%s,%s,%d" % (status, year, m))
+            total = Document.objects.filter(documentstate__state__id=status, documentstate__created_at__year=year).distinct().count()
             subtotal_args = "%s,%s" % (status, year,)
 
         elif report_type == "daily":
@@ -297,7 +302,7 @@ def report(request):
         year = ''
         month = ''
 
-    return render(request, "documents/report.html", {"templates": templates, "form": form, 'report_type': report_type, 'status': status, 'year': year, 'month': month, "args": args, "subtotal_args": subtotal_args})
+    return render(request, "documents/report.html", {"templates": templates, "form": form, 'report_type': report_type, 'status': status, 'year': year, 'month': month, "args": args, "subtotal_args": subtotal_args, "subtotal_arg": subtotal_arg, "total": total})
 
 def track(request, id):
     documents = Document.objects.filter(id=id).all()
