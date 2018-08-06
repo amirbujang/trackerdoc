@@ -58,7 +58,7 @@ def document_index(request):
                     documents[i].columns.append(cell.extra_data)
 
     states = State.objects.all()
-    templates = Template.objects.all()
+    templates = Template.objects.filter(is_active=True).all()
     return render(request, "documents/document_index.html", {"documents": documents, "table_headers": table_headers, "keyword": keyword, "templates": templates, "states": states, "status_code": status_code})
 
 @login_required
@@ -115,9 +115,10 @@ def document_create(request):
 
 @login_required
 def document_edit(request, id):
-    tags = TemplateTag.objects.order_by('sorting_order').all()
-    DataFormSet = inlineformset_factory(Document, Data, form=DataForm, extra=0, can_delete=False)
     document = Document.objects.filter(id=id).first()
+    # tags = TemplateTag.objects.order_by('sorting_order').all()
+    tags = TemplateTag.objects.filter(template_id=document.template.id).order_by('sorting_order').all()
+    DataFormSet = inlineformset_factory(Document, Data, form=DataForm, extra=0, can_delete=False)
 
     if request.method == "POST":
         formset = DataFormSet(request.POST, instance=document)

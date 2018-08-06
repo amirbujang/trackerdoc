@@ -22,7 +22,7 @@ class DataForm(forms.ModelForm):
         fields = ['content', 'template_tag']
         widgets = {
             'template_tag': forms.HiddenInput(),
-            'content': forms.TextInput(),
+            'content': forms.TextInput(attrs={'autocomplete': 'off'}),
         }
 
 class TemplateUploadForm(forms.ModelForm):

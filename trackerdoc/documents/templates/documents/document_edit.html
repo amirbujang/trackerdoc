@@ -47,6 +47,22 @@
             </div>
 
           </div>
+          
+          {% if tag.is_autocomplete %}
+          <script type="text/javascript">
+          $('#{{ field.id_for_label }}').typeahead({
+            source: function (kw, callback) {
+              $.get('{% url "documents:autocomplete" %}',
+                { tag: '{{ tag.tag }}', kw: kw },
+                function (data) {
+                  callback(data);
+                }
+              );
+            },
+          });
+          </script>
+          {% endif %}
+
         {% endfor %}
       {% endwith %}
     {% endfor %}
@@ -57,7 +73,19 @@
 
   </form>
 
-
-
 </div>
+
+<script type="text/javascript">
+$('form input').on('keypress', function(e) {
+  if (e.which !== 13) {
+    return true;
+  } else {
+    var index = $('.form-control').index(this) + 1;
+    $('.form-control').eq(index).focus();
+    return false;
+  }
+});
+
+
+</script>
 {% include "footer.html" %}
