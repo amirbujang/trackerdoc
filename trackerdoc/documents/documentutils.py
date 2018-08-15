@@ -14,7 +14,7 @@ def search_documents(request):
     keyword = keyword.strip()
     records = Document.search(keyword, status_code).order_by("-created_at").distinct()
 
-    paginator = Paginator(records, 5)
+    paginator = Paginator(records, 10)
     return paginator.get_page(page)
 
 
