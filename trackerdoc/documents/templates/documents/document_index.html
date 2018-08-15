@@ -14,11 +14,11 @@
   <div class="row" style="margin-bottom: 10px;">
     <div class="col-lg">
       <form action="{% url 'documents:document_index' %}" method="GET" class="form-inline" style="margin-bottom: 10px;">
-        <input name="keyword" type="text" class="form-control mb-2 mr-sm-2" placeholder="Search documents" value="{{ keyword }}">
+        <input name="keyword" type="text" class="form-control mb-2 mr-sm-2" placeholder="Search documents" value="{{ request.GET.keyword }}">
         <select name="status_code" class="form-control mb-2 mr-sm-2">
           <option value="">Any status</option>
           {% for state in states %}
-            {% if state.code == status_code %}
+            {% if state.code == request.GET.status_code %}
               <option selected="selected" value="{{ state.code }}">{{ state.name }}</option>
             {% else %}
               <option value="{{ state.code }}">{{ state.name }}</option>
@@ -45,14 +45,14 @@
     </div>
   </div>
 
-  {% if keyword or status_code %}
+  {% if request.GET.keyword or request.GET.status_code %}
   <div class="alert alert-primary" role="alert">
-    {% if keyword and status_code %}
-    Search results for <strong><em>{{ keyword }}</em></strong> and status <strong><em>{{ status_code }}</em></strong>.
-    {% elif keyword %}
-    Search results for <strong><em>{{ keyword }}</em></strong>.
-    {% elif status_code %}
-    Search results for status <strong><em>{{ status_code }}</em></strong>.
+    {% if request.GET.keyword and request.GET.status_code %}
+    Search results for <strong><em>{{ request.GET.keyword }}</em></strong> and status <strong><em>{{ request.GET.status_code }}</em></strong>.
+    {% elif request.GET.keyword %}
+    Search results for <strong><em>{{ request.GET.keyword }}</em></strong>.
+    {% elif request.GET.status_code %}
+    Search results for status <strong><em>{{ request.GET.status_code }}</em></strong>.
     {% endif %}
     <a href="{% url 'documents:document_index' %}">Clear search</a>
   </div>
@@ -79,8 +79,10 @@
               {% with header=table_headers|get_value:forloop.counter0 %}
                 {% if datatype == 'datetime' %}
                   <td style="width: 1%; white-space:nowrap;" class="{{ header.css_class }}">{{ column|date:'d/m/Y' }}</td>
+                {% elif request.GET.keyword %}
+                  <td class="{{ header.css_class }}">{{ column|highlight:request.GET.keyword }}</td>
                 {% else %}
-                  <td class="{{ header.css_class }}">{{ column|highlight:keyword }}</td>
+                  <td class="{{ header.css_class }}">{{ column }}</td>
                 {% endif %}
               {% endwith %}
             {% endwith %}

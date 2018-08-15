@@ -48,8 +48,13 @@ def document_index(request):
                     documents[i].columns.append(cell.extra_data)
 
     states = State.objects.all()
+<<<<<<< Updated upstream
     templates = Template.objects.filter(is_active=True).all()
+    return render(request, "documents/document_index.html", {"documents": documents, "table_headers": table_headers, "keyword": keyword, "templates": templates, "states": states, "status_code": status_code})
+=======
+    templates = Template.objects.all()
     return render(request, "documents/document_index.html", {"documents": documents, "table_headers": table_headers, "templates": templates, "states": states})
+>>>>>>> Stashed changes
 
 @login_required
 def document_create(request):
@@ -106,6 +111,7 @@ def document_create(request):
 @login_required
 def document_edit(request, id):
     document = Document.objects.filter(id=id).first()
+    # tags = TemplateTag.objects.order_by('sorting_order').all()
     tags = TemplateTag.objects.filter(template_id=document.template.id).order_by('sorting_order').all()
     DataFormSet = inlineformset_factory(Document, Data, form=DataForm, extra=0, can_delete=False)
 

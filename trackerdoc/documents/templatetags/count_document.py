@@ -13,7 +13,7 @@ def countdocument_by_status(template, comma_split_args):
         count = Document.objects.filter(template__id=template.id, documentstate__created_at__year=year, documentstate__created_at__month=month, documentstate__created_at__day=day, documentstate__state__id=state).distinct().count()
     elif len(args) == 3:
         state, year, month = comma_split_args.split(",")
-        count = Document.objects.filter(template__id=template.id, documentstate__created_at__year=year, documentstate__created_at__month=month, documentstate__state__id=state).distinct().count()
+        count = Document.objects.filter(template__id__=template.id, documentstate__created_at__year=year, documentstate__created_at__month=month, documentstate__state__id=state).distinct().count()
     elif len(args) == 2:
         state, year = comma_split_args.split(",")
         count = Document.objects.filter(template__id=template.id, documentstate__created_at__year=year, documentstate__state__id=state).distinct().count()

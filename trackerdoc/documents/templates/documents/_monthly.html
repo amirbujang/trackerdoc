@@ -37,7 +37,7 @@
       <tr>
         <td>{{ template.name }}</td>
         {% for arg in args %}
-        <td>{{ template|countdocument_by_status:arg }}</td>
+        <td data-arg="{{arg}}">{{ template|countdocument_by_status:arg }}</td>
         {% endfor %}
         <td>{{ template|countdocument_by_status:subtotal_args }}</td>
       </tr>
