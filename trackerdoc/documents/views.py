@@ -15,6 +15,7 @@ from .models import DocumentTableColumn, Document, Data, DocumentState, Template
 from .forms import DataForm, DocumentForm, TemplateForm, TemplateUploadForm, TemplateTagForm, StatusUpdateForm, ReportForm
 from .date import get_today_date, get_today_local_date, get_today_hijri_date
 from .documentutils import search_documents
+from .utils import reportutils
 
 def make_filename_safe(name):
     regex = re.compile('[^a-zA-Z0-9 ]')
@@ -250,49 +251,43 @@ def template_delete(request, id):
 
 @login_required
 def report(request):
-    templates = Template.objects.filter(is_active=True).all()
+    parent_templates = Template.get_parents()
+    data = []
+    totals = []
+    years = []
+    grand_total = 0
 
     if request.GET:
         form = ReportForm(request.GET)
     else:
         form = ReportForm()
 
-    subtotal_arg = ''
-    args = []
-    subtotal_args = ''
-    total = 0
     if form.is_valid():
         data = form.cleaned_data
         report_type = data['report_type']
         status = data['status']
         year = data['year']
-        month = data['month']
 
-        if report_type == "yearly":
-            args.append("%s,2018" % (status,))
-            total = Document.objects.filter(documentstate__state__id=status).distinct().count()
-            subtotal_arg = "%s, 2018" % (status, )
-
-        elif report_type == "monthly":
-            for m in range(1,13):
-                args.append("%s,%s,%d" % (status, year, m))
-            total = Document.objects.filter(documentstate__state__id=status, documentstate__created_at__year=year).distinct().count()
-            subtotal_args = "%s,%s" % (status, year,)
-
-        elif report_type == "daily":
-            dow, day_count = monthrange(int(year), int(month))
-            for d in range(1, day_count+1):
-                args.append("%s,%s,%s,%d" % (status, year, month, d))
-
-            subtotal_args = "%s,%s,%s" % (status, year, month)
+        if report_type == "monthly":
+            data, totals = reportutils.get_total_by_month(parent_templates, status, year)
+            grand_total = sum(totals)
+        elif report_type == "yearly":
+            data, totals = reportutils.get_total_by_year(parent_templates, status)
+            grand_total = sum(totals)
+            years = reportutils.get_years()
 
     else:
         report_type = ''
-        status = ''
-        year = ''
-        month = ''
 
-    return render(request, "documents/report.html", {"templates": templates, "form": form, 'report_type': report_type, 'status': status, 'year': year, 'month': month, "args": args, "subtotal_args": subtotal_args, "subtotal_arg": subtotal_arg, "total": total})
+    return render(request, "documents/report.html", {
+            'form': form,
+            'report_type': report_type,
+            'parents': parent_templates,
+            'data': data,
+            'years': years,
+            'totals': totals,
+            'grand_total': grand_total
+        })
 
 def track(request, id):
     documents = Document.objects.filter(id=id).all()

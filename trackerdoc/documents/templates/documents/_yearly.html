@@ -1,36 +1,33 @@
-{% load count_document %}
 <div class="table-responsive">
   <table class="table table-bordered">
     <thead class="thead-light">
       <tr>
-        <th rowspan="">Document Type</th>
-        <th colspan="">2018</th>
-        <th rowspan="">Total</th>
+        <th>Document</th>
+        {% for year in years %}
+        <th>{{ year }}</th>
+        {% endfor %}
+        <th>Total</th>
       </tr>
     </thead>
     <tfoot>
-      {% for template in templates %}
-      {% if forloop.counter0 == 0 %}
       <tr>
         <th>TOTAL</th>
-        {% for arg in args %}
-        <th>{{ template|totaldocument_by_status:arg }}</th>
-        {% endfor %}
+        {% for total in totals %}
         <th>{{ total }}</th>
+        {% endfor %}
+        <th>{{ grand_total }}</th>
       </tr>
-      {% endif %}
-      {% endfor %}
     </tfoot>
     <tbody>
-      {% for template in templates %}
-      <tr>
-        <td>{{ template.name }}</td>
-        {% for arg in args %}
-        <td>{{ template|countdocument_by_status:arg }}</td>
-        {% endfor %}
-        <td>{{ template|countdocument_by_status:subtotal_arg }}</td>
-      </tr>
+      {% for parent, totals in data %}
+        <tr>
+          <th>{{ parent.get_proper_name }}</th>
+          {% for total in totals %}
+            <td>{{ total }}</td>
+          {% endfor %}
+        </tr>
       {% endfor %}
     </tbody>
   </table>
+
 </div>

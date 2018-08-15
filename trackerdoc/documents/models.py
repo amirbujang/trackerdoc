@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, F
 from django.contrib.auth.models import User, Group
 
 class DocumentTableColumn(models.Model):
@@ -47,6 +47,7 @@ class EventPermission(models.Model):
 
 class Template(models.Model):
     name = models.CharField(max_length=50)
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='children')
     description = models.TextField(blank=True)
     template_single_page = models.TextField(blank=True)
     template_with_attachment = models.TextField(blank=True)
@@ -63,6 +64,24 @@ class Template(models.Model):
 
     def count_document_y(self, year):
         return Document.objects.filter(documentstate__created_at__year=year, template__id=self.id, documentstate__state__code="serah").count()
+
+    @staticmethod
+    def get_parents():
+        return Template.objects.filter(parent__id=F('id'))
+
+    def get_active_child(self):
+        for template in self.children.all():
+            if template.is_active:
+                return template
+
+        return None
+
+    def get_proper_name(self):
+        child = self.get_active_child()
+        if child:
+            return child.name
+        else:
+            return self.name
 
 class TemplateTag(models.Model):
     template = models.ForeignKey(Template, on_delete=models.CASCADE)
