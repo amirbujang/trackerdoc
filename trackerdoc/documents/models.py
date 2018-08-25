@@ -83,12 +83,19 @@ class Template(models.Model):
         else:
             return self.name
 
+
+TAG_TYPE_CHOICES = [
+    ('text', 'Text'),
+    ('local_date', 'Date'),
+    ('hijri_date', 'Date (Hijri)'),
+]
+
 class TemplateTag(models.Model):
     template = models.ForeignKey(Template, on_delete=models.CASCADE)
     tag = models.CharField(max_length=50)
     label = models.CharField(max_length=50)
     description = models.TextField(blank=True)
-    type = models.CharField(max_length=20)
+    type = models.CharField(max_length=20, choices=TAG_TYPE_CHOICES)
     default_content = models.TextField(blank=True)
     is_searchable = models.BooleanField(default=False)
     is_capitalize = models.BooleanField(default=True)
