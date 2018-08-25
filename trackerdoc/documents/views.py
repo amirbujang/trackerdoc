@@ -23,7 +23,13 @@ def make_filename_safe(name):
 
 @login_required
 def document_index(request):
+    template_id = request.GET.get("template_id")
+    template = None
+    if template_id:
+        template = Template.objects.filter(id=template_id).first()
+
     documents = search_documents(request)
+
 
     table_headers = DocumentTableColumn.objects.all().order_by("sorting_order")
     for i, document in enumerate(documents):
@@ -50,18 +56,20 @@ def document_index(request):
 
     states = State.objects.all()
     templates = Template.objects.filter(is_active=True).all()
-    return render(request, "documents/document_index.html", {"documents": documents, "table_headers": table_headers, "templates": templates, "states": states})
+    navbar_templates = templates
+    return render(request, "documents/document_index.html", {"documents": documents, "table_headers": table_headers, "templates": templates, "states": states, 'template': template, 'navbar_templates': navbar_templates})
 
 @login_required
 def document_create(request):
     template_id = request.GET.get('template_id')
+    template = Template.objects.filter(id=template_id).first()
     tags = TemplateTag.objects.filter(template__id=template_id).order_by('sorting_order').all()
     DataFormSet = inlineformset_factory(Document, Data, form=DataForm, extra=len(tags), can_delete=False)
 
     if request.method == "POST":
         baru = State.objects.filter(type="start").first()
         document = Document()
-        document.template = Template.objects.filter(id=template_id).first()
+        document.template = template
         document.current_state = baru
         document.save()
         document.documentstate_set.create(
@@ -101,7 +109,8 @@ def document_create(request):
 
         formset = DataFormSet(initial=initials)
 
-    return render(request, "documents/document_create.html", {"formset": formset, 'template_tags': tags, "template_id": template_id})
+    navbar_templates = Template.objects.filter(is_active=True).all()
+    return render(request, "documents/document_create.html", {"formset": formset, 'template_tags': tags, "template_id": template_id, 'template': template, 'navbar_templates': navbar_templates})
 
 
 @login_required
@@ -119,7 +128,8 @@ def document_edit(request, id):
     else:
         formset = DataFormSet(instance=document)
 
-    return render(request, "documents/document_edit.html", {"formset": formset, 'template_tags': tags})
+    navbar_templates = Template.objects.filter(is_active=True).all()
+    return render(request, "documents/document_edit.html", {"formset": formset, 'template_tags': tags, 'document': document, 'navbar_templates': navbar_templates})
 
 @login_required
 def document_view(request, id):
@@ -180,7 +190,8 @@ def document_update_state(request):
 @login_required
 def template_index(request):
     templates = Template.objects.all()
-    return render(request, "documents/template_index.html", {"templates": templates})
+    navbar_templates = Template.objects.filter(is_active=True).all()
+    return render(request, "documents/template_index.html", {"templates": templates, 'navbar_templates': navbar_templates})
 
 @login_required
 def template_view(request, id):
@@ -201,7 +212,8 @@ def template_create(request):
             return HttpResponse("form not valid")
     else:
         form = TemplateUploadForm()
-        return render(request, "documents/template_create.html", {"form": form})
+        navbar_templates = Template.objects.filter(is_active=True).all()
+        return render(request, "documents/template_create.html", {"form": form, 'navbar_templates': navbar_templates})
 
 
 @login_required
@@ -239,7 +251,8 @@ def template_edit(request, id):
 
         formset = TagFormSet(initial=initials, instance=template)
 
-        return render(request, "documents/template_edit.html", {"form": form, "formset": formset})
+        navbar_templates = Template.objects.filter(is_active=True).all()
+        return render(request, "documents/template_edit.html", {"form": form, "formset": formset, 'navbar_templates': navbar_templates})
 
 
 @login_required

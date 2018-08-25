@@ -6,44 +6,62 @@
 
 <div class="container-fluid">
 
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb shadow-sm">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+
+      {% if template %}
+        <li class="breadcrumb-item active" aria-current="page">Documents - {{ template.get_proper_name }}</li>
+      {% else %}
+        <li class="breadcrumb-item active" aria-current="page">All Documents</li>
+      {% endif %}
+    </ol>
+  </nav>
+
   <div id="blank-modal" class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
     <div class="modal-dialog modal-sm">
     </div>
   </div>
 
-  <div class="row" style="margin-bottom: 10px;">
-    <div class="col-lg">
-      <form action="{% url 'documents:document_index' %}" method="GET" class="form-inline" style="margin-bottom: 10px;">
-        <input name="keyword" type="text" class="form-control mb-2 mr-sm-2" placeholder="Search documents" value="{{ request.GET.keyword }}">
-        <select name="status_code" class="form-control mb-2 mr-sm-2">
-          <option value="">Any status</option>
-          {% for state in states %}
-            {% if state.code == request.GET.status_code %}
-              <option selected="selected" value="{{ state.code }}">{{ state.name }}</option>
-            {% else %}
-              <option value="{{ state.code }}">{{ state.name }}</option>
-            {% endif %}
-          {% endfor %}
-        </select>
-        <button class="btn btn-primary mb-2" type="submit">Search</button>
-      </form>
-    </div>
+  <div class="card document-index-top-card shadow-sm">
+    <div class="card-body">
 
-    <div class="col-lg">
-      <form action="{% url 'documents:create_document' %}" class="form-inline float-md-right" method="GET" style="margin-bottom: 10px;">
-        <select class="form-control mb-2 mr-sm-2" name="template_id">
-          {% for template in templates %}
-          <option value="{{ template.id }}">{{ template.name }}</option>
-          {% endfor %}
-        </select>
-        <button
-          {% if not request.user|create_permission %}
-          disabled="disabled"
-          {% endif %}
-          class="btn btn-primary mb-2" type="submit">Create New Document</button>
-      </form>
+      <div class="float-lg-left">
+        <form action="{% url 'documents:document_index' %}" method="GET" class="form-inline">
+          <input name="keyword" type="text" class="form-control mr-sm-2" placeholder="Search documents" value="{{ request.GET.keyword }}">
+          <select name="status_code" class="custom-select mr-sm-2">
+            <option value="">Any status</option>
+            {% for state in states %}
+              {% if state.code == request.GET.status_code %}
+                <option selected="selected" value="{{ state.code }}">{{ state.name }}</option>
+              {% else %}
+                <option value="{{ state.code }}">{{ state.name }}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+          <button class="btn btn-primary" type="submit">Search</button>
+        </form>
+      </div>
+
+      <div class="float-lg-right">
+        <form action="{% url 'documents:create_document' %}" class="form-inline float-md-right" method="GET">
+          <select class="custom-select mr-sm-2" name="template_id">
+            {% for template in templates %}
+            <option value="{{ template.id }}">{{ template.name }}</option>
+            {% endfor %}
+          </select>
+          <button
+            {% if not request.user|create_permission %}
+            disabled="disabled"
+            {% endif %}
+            class="btn btn-primary" type="submit">Create New Document</button>
+        </form>
+      </div>
+
     </div>
   </div>
+
+
 
   {% if request.GET.keyword or request.GET.status_code %}
   <div class="alert alert-primary" role="alert">
@@ -60,7 +78,7 @@
 
 
   <div class="table-responsive">
-    <table class="table table-bordered">
+    <table class="table document-index-table shadow-sm">
       <thead class="thead-light">
         <tr>
           {% for th in table_headers %}
@@ -70,6 +88,16 @@
           <th colspan="2">Actions</th>
         </tr>
       </thead>
+
+      <tfoot>
+        <tr>
+          <td colspan="{{ table_headers|length }}"></td>
+          <td>
+            <button id="update-button" class="btn btn-success btn-block btn-sm" type="button" disabled>Update Status</button>
+          </td>
+          <td colspan="2"></td>
+        </tr>
+      </tfoot>
 
       <tbody>
         {% for document in documents %}
@@ -92,7 +120,7 @@
             <del></del> <span style="display: none;" class="fas fa-arrow-right state-arrow"></span> <span class="state-name">{{ document.current_state.name }}</span>
           </td>
 
-          <td style="width: 1%; white-space:nowrap;" class="action-event">
+          <td class="action-event">
             {% for event in document.events %}
             <button class="btn btn-secondary btn-sm btn-event btn-block"
               data-document-id="{{ document.id }}"
@@ -131,13 +159,6 @@
           </td>
         </tr>
         {% endfor %}
-        <tr>
-          <td colspan="{{ table_headers|length }}"></td>
-          <td>
-            <button id="update-button" class="btn btn-success btn-block btn-sm" type="button" disabled>Update Status</button>
-          </td>
-          <td colspan="2"></td>
-        </tr>
       </tbody>
 
     </table>

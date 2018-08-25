@@ -4,6 +4,7 @@ from .models import Document
 def search_documents(request):
     """Search documents by GET request (keyword, status_code and page)"""
 
+    template_id = request.GET.get("template_id")
     keyword = request.GET.get("keyword")
     status_code = request.GET.get("status_code")
     page = request.GET.get("page")
@@ -12,7 +13,11 @@ def search_documents(request):
         keyword = ""
 
     keyword = keyword.strip()
-    records = Document.search(keyword, status_code).order_by("-created_at").distinct()
+
+    if template_id:
+        records = Document.search(keyword, status_code).filter(template__parent__id=template_id).order_by("-created_at").distinct()
+    else:
+        records = Document.search(keyword, status_code).order_by("-created_at").distinct()
 
     paginator = Paginator(records, 10)
     return paginator.get_page(page)
