@@ -1,0 +1,60 @@
+$body-color: #e5e5e5;
+$row-color: lighten($body-color, 5%);
+
+body {
+  background-color: $body-color;
+}
+
+table {
+  th {
+    background-color: white !important;
+  }
+
+  td {
+    background-color: $row-color;
+  }
+
+  tr:hover td {
+    background-color: darken($row-color, 2.5%);
+  }
+}
+
+.breadcrumb {
+  background-color: white !important;
+  margin-bottom: 1.5rem;
+}
+
+.document-index-table {
+  th, td {
+    // padding: 0.5rem 0.75em;
+  }
+
+  td {
+    font-size: 0.9em;
+  }
+
+  tfoot td {
+    background-color: white;
+  }
+
+  .action-event {
+    width: 1%;
+    white-space:nowrap;
+    padding: 0.45rem;
+  }
+}
+
+.document-edit-form-card,
+.document-create-form-card {
+  margin-bottom: 2rem;
+  .card-body {
+    padding: 2rem 1rem;
+  }
+}
+
+.document-index-top-card {
+  margin-bottom: 0.75rem;
+  .card-body {
+    padding: 0.75rem 1rem;
+  }
+}

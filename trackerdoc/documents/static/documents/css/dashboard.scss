@@ -1,0 +1,234 @@
+$body-background-color: #e5e5e5;
+
+
+body {
+  background-color: $body-background-color;
+}
+
+table {
+  th {
+    .title {
+      float: left;
+      padding-top: 2px;
+    }
+    .action {
+      float: right;
+      a {
+        color: #cecece !important;
+        padding: 0 0.25em;
+        font-size: 1.25em;
+        line-height: 24px;
+      }
+      a:hover {
+        color: #a5a5a5 !important;
+      }
+    }
+  }
+}
+
+ol.breadcrumb {
+  background-color: white;
+  margin-bottom: 30px;
+}
+
+.dashboard-staff {
+  th {
+    background-color: white !important;
+    border-bottom-color: #ccc !important;
+  }
+  td {
+    padding: 0.25rem 0.75rem;
+    background-color: #f4f4f4;
+  }
+  td.slot {
+    width: 2rem;
+    font-size: 0.65em;
+    padding: 0;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .slot-nop {
+    background-color: darken(#f4f4f4, 5%);
+  }
+  .project,
+  .staff {
+
+  }
+}
+
+.dashboard-activities {
+  th {
+    background-color: white !important;
+    border-bottom-color: #ccc !important;
+  }
+  td {
+    padding: 0.25rem 0.75rem;
+    background-color: #f4f4f4;
+  }
+}
+
+.dashboard-project-summary {
+  th {
+    background-color: white !important;
+    border-bottom-color: #ccc !important;
+  }
+  td {
+    padding: 0.25rem 0.75rem;
+    background-color: #f4f4f4;
+  }
+  .boxes {
+    font-size: 0.5em;
+    min-width: 200px;
+  }
+  .box-100 {
+    color: #4CAF50;
+  }
+  .box-50 {
+    color: #FFEB3B;
+  }
+  .box-0 {
+    color: #aaa;
+  }
+}
+
+.dashboard-upcoming-task {
+  th {
+    background-color: white !important;
+    border-bottom-color: #ccc !important;
+  }
+  td {
+    padding: 0.25rem 0.75rem;
+    background-color: #f4f4f4;
+  }
+  .date {
+    width: 60px;
+    font-weight: bold;
+  }
+  .date {
+    padding: 0 0.75rem;
+    vertical-align: middle;
+    font-size: 0.85em;
+  }
+  .dow {
+    font-weight: normal;
+    margin-top: -4px;
+    font-size: 0.85em;
+    color: #666;
+  }
+  .project {
+    line-height: 24px;
+    width: 190px;
+  }
+  tfoot td {
+    background-color: white;
+  }
+}
+
+.dashboard-daily-checklist {
+  min-width: 700px;
+
+  th {
+    background-color: white !important;
+    border-bottom-color: #ccc !important;
+  }
+  tr.area-row-last td {
+    border-bottom-color: #ccc !important;
+  }
+  tr.area-row {
+    td.area {
+      border-right-color: #ccc !important;
+    }
+    td {
+      padding: 0.25rem 0.75rem;
+      background-color: #f4f4f4;
+    }
+  }
+  td.area {
+    width: 20rem;
+  }
+  td.slot {
+    vertical-align: middle;
+    text-align: center;
+    padding: 0 !important;
+    width: 2rem;
+    font-size: 0.65em;
+    color: white;
+    font-weight: bold;
+    cursor: default;
+  }
+  td.slot-end {
+    border-right: 1px solid #ccc;
+  }
+  td.slot-100 {
+    background-color: #4CAF50 !important;
+    border-color: #388E3C;
+  }
+  td.slot-50 {
+    background-color: #FFEB3B !important;
+    border-color: #FBC02D;
+  }
+  td.slot-0 {
+    background-color: #FF5722 !important;
+    border-color: #E64A19;
+  }
+
+  .footer {
+    td.slot-100 {
+      background-color: darken(#4CAF50, 10%) !important;
+      border-color: darken(#388E3C, 10%);
+    }
+    td.slot-50 {
+      background-color: darken(#FFEB3B, 20%) !important;
+      border-color: darken(#FBC02D, 20%);
+    }
+    td.slot-0 {
+      background-color: darken(#FF5722, 10%) !important;
+      border-color: darken(#E64A19, 10%);
+    }
+  }
+
+  th.add-shift {
+    font-size: 1.25em;
+    line-height: 24px;
+  }
+  .last-col {
+    border-left: 1px none white;
+  }
+  tr.footer td {
+    padding: 0.25rem 0.75rem;
+    background-color: white;
+  }
+
+  .shift-name,
+  .project-name {
+    float: left;
+  }
+  .shift-setting,
+  .project-info {
+    float: right;
+    a {
+      color: #cecece !important;
+      padding: 0 0.25em;
+    }
+    a:hover {
+      color: #a5a5a5 !important;
+    }
+  }
+  .project-info a {
+    padding: 0 0.5em;
+  }
+  .add-shift-button {
+    color: #cecece !important;
+    padding: 0 0.25em;
+  }
+  .add-shift-button:hover {
+    color: #a5a5a5 !important;
+  }
+  .add-area {
+    font-size: 0.8em;
+    color: #aaaaaa !important;
+  }
+  .add-area:hover {
+    color: #666666 !important;
+  }
+}
