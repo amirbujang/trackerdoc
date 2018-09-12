@@ -61,7 +61,13 @@
                   {% if tags.0.is_searchable %} <span class="fas fa-check" title="Searchable"></span> {% endif %}
                 </td>
 
-                <td rowspan="{{ rowspan }}" class="fit-cell">Active</td>
+                <td rowspan="{{ rowspan }}" class="fit-cell">
+                  {% if template.is_active %}
+                  Active
+                  {% else %}
+                  Not Active
+                  {% endif %}
+                </td>
                 <td rowspan="{{ rowspan }}" class="template-index-actions">
                   <a href="{% url 'documents:view_template' template.id %}"><span class="fas fa-eye" title="Preview template"></span></a>
                   <a href="{% url 'documents:edit_template' template.id %}"><span class="fas fa-pencil-alt" title="Edit template"></span></a>
