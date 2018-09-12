@@ -95,7 +95,7 @@ class TemplateTag(models.Model):
     tag = models.CharField(max_length=50)
     label = models.CharField(max_length=50)
     description = models.TextField(blank=True)
-    type = models.CharField(max_length=20, choices=TAG_TYPE_CHOICES)
+    type = models.CharField(max_length=20, choices=TAG_TYPE_CHOICES, default='text')
     default_content = models.TextField(blank=True)
     is_searchable = models.BooleanField(default=False)
     is_capitalize = models.BooleanField(default=True)
