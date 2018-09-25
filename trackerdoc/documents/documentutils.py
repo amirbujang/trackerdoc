@@ -22,6 +22,16 @@ def search_documents(request):
     paginator = Paginator(records, 10)
     return paginator.get_page(page)
 
+def search_document(request):
+    reference_number = request.GET.get('reference_number')
+
+    if not reference_number:
+        return []
+    else:
+        reference_number = reference_number.strip()
+
+    records = Document.objects.filter(data__content=reference_number).all()[:1]
+    return records
 
 def documents_to_table(documents):
     """Transform List[Document] to html """

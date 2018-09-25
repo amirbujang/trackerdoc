@@ -14,7 +14,7 @@ import re, json
 from .models import DocumentTableColumn, Document, Data, DocumentState, TemplateTag, Template, State
 from .forms import DataForm, DocumentForm, TemplateForm, TemplateUploadForm, TemplateTagForm, StatusUpdateForm, ReportForm
 from .date import get_today_date, get_today_local_date, get_today_hijri_date
-from .documentutils import search_documents
+from .documentutils import search_documents, search_document
 from .utils import reportutils
 
 def make_filename_safe(name):
@@ -316,3 +316,39 @@ def autocomplete(request):
     datas = Data.objects.values_list('content').filter(template_tag__tag=tag, content__contains=kw).distinct()[:3]
     result = [d[0] for d in datas]
     return JsonResponse(result, safe=False)
+
+
+def public_check(request):
+    documents = search_document(request)
+
+    table_headers = DocumentTableColumn.objects.all().order_by("sorting_order")
+    for i, document in enumerate(documents):
+        documents[i].columns = []
+        for header in table_headers:
+            if header.table == "data":
+                tags = header.values.split(",")
+                cell = Data.objects.filter(document__id=document.id, template_tag__tag__in=tags).first()
+                if cell:
+                    documents[i].columns.append(cell.content)
+                else:
+                    documents[i].columns.append('')
+            elif header.table == "state":
+                cell = DocumentState.objects.filter(document__id=document.id, state__code=header.values).last()
+                if cell:
+                    documents[i].columns.append(cell.created_at)
+                else:
+                    documents[i].columns.append('')
+
+            elif header.table == "state_data":
+                cell = DocumentState.objects.filter(document__id=document.id).last()
+                if cell:
+                    documents[i].columns.append(cell.extra_data)
+
+    states = State.objects.all()
+    templates = Template.objects.filter(is_active=True).all()
+    navbar_templates = templates
+    return render(request, "documents/public_check.html", {
+        "documents": documents,
+        "table_headers": table_headers,
+        "states": states,
+    })

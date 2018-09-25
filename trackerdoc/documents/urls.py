@@ -14,6 +14,7 @@ urlpatterns = [
     path("report/", views.report, name="report"),
 
     path("autocomplete/", views.autocomplete, name="autocomplete"),
+    path("track/", views.public_check, name="public_check"),
 
     path("template/index/", views.template_index, name="template_index"),
     path("template/view/<int:id>", views.template_view, name="view_template"),

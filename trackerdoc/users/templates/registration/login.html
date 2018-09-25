@@ -17,6 +17,9 @@
           {% include "bootstrap4form.html" %}
 
           <button class="btn btn-primary btn-block" type="submit">{% trans "Login" %}</button>
+          <div style="margin-top: 10px;">
+            <a href="{% url 'documents:public_check' %}">Check document status (Guest)</a>
+          </div>
         </form>
       </div>
       <div style="text-align: center;">

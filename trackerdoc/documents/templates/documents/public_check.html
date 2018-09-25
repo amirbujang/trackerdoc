@@ -1,0 +1,67 @@
+{% include "header.html" %}
+{% load class_tag %}
+{% load arr_index %}
+
+<div class="container-fluid">
+  <br>
+  <br>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb shadow-sm">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+
+      <li class="breadcrumb-item active" aria-current="page">Track</li>
+    </ol>
+  </nav>
+
+  <div class="card document-index-top-card shadow-sm">
+    <div class="card-body">
+
+      <form action="{% url 'documents:public_check' %}" method="GET" class="form-inline">
+        <input name="reference_number" type="text" style="width: 300px;" class="form-control mr-sm-2" placeholder="Document reference number" value="{{ request.GET.reference_number }}">
+        <button class="btn btn-primary" type="submit">Search</button>
+      </form>
+
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table document-index-table shadow-sm">
+      <thead class="thead-light">
+        <tr>
+          {% for th in table_headers %}
+          <th>{{ th.header }}</th>
+          {% endfor %}
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for document in documents %}
+        <tr>
+          {% for column in document.columns %}
+            {% with datatype=column|get_class %}
+              {% with header=table_headers|get_value:forloop.counter0 %}
+                {% if datatype == 'datetime' %}
+                  <td style="width: 1%; white-space:nowrap;" class="{{ header.css_class }}">{{ column|date:'d/m/Y' }}</td>
+                {% else %}
+                  <td class="{{ header.css_class }}">{{ column }}</td>
+                {% endif %}
+              {% endwith %}
+            {% endwith %}
+          {% endfor %}
+
+          <td style="width: 1%; white-space:nowrap;" class="current-state">
+            <del></del> <span style="display: none;" class="fas fa-arrow-right state-arrow"></span> <span class="state-name">{{ document.current_state.name }}</span>
+          </td>
+
+
+        </tr>
+        {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+
+</div>
+
+{% include "footer.html" %}
